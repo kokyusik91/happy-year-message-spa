@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
   mode: 'development',
+  // 최초의 진입점 key값에 파일 이름 설정 할 수 있음!
   entry: {
     kks: '/src/index.ts',
   },
