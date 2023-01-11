@@ -1,30 +1,20 @@
 import './app'
 import './shared/api'
-import writePage from './app'
+import MainPage from './pages/mainpage'
+import DetailPage from './pages/detailpage'
+import WritePage from './pages/writepage'
+import notFoundPage from './pages/notFoundpage'
 
 import '../styles/index.scss'
 
+type Route = {
+  path: string
+  component: any
+}
+
 class App {
   private data: any
-  constructor(element?: HTMLElement) {
-    const buttonTag = document.createElement('button')! as HTMLButtonElement
-    buttonTag.innerText = '작성하기'
-    element?.insertAdjacentElement('afterend', buttonTag)
-    buttonTag.addEventListener('click', () => {
-      PageRoute.push({ template: writePage }, '/write')
-      this.data = history.state.template
-      App.render(this.data)
-    })
-
-    const buttonTag2 = document.createElement('button')! as HTMLButtonElement
-    buttonTag2.innerText = '수정하기'
-    element?.insertAdjacentElement('afterend', buttonTag2)
-    buttonTag2.addEventListener('click', () => {
-      PageRoute.push({ template: `<h1>디테일 페이지</h1>` }, '/detail')
-      this.data = history.state.template
-      App.render(this.data)
-    })
-  }
+  constructor(element?: HTMLElement) {}
 
   // 화면에 템플릿을 그려주는 함수
   static render(template: string) {
@@ -33,25 +23,126 @@ class App {
   }
 }
 
-class PageRoute {
-  constructor() {}
+class Router {
+  constructor() {
+    // pushState로 페이지 이동할때마다 해당하는 콘솔이 찍히게 한다.
+    const routes = [
+      {
+        path: '/',
+        component: () => console.log('메인페이지!'),
+      },
+      {
+        path: '/write',
+        component: () => console.log('작성하기 페이지!'),
+      },
+      {
+        path: '/edit',
+        component: () => console.log('메인페이지!'),
+      },
+    ]
 
-  static push(data?: any, url?: string) {
-    history.pushState(data, 'null', url)
+    let match = routes.find((route) => route.path === location.pathname)
+    console.log(match)
+    const button = document.querySelector('.button')
+    button?.addEventListener('click', () => {
+      let match = routes.find((route) => route.path === location.pathname)
+
+      Router.navigate('/write')
+      match?.component()
+    })
+
+    match?.component()
+  }
+
+  static navigate(url?: string) {
+    history.pushState('null', 'null', url)
   }
 
   static back() {
     history.back()
   }
+}
 
-  static pageStack() {
-    return history.length
+const routes: Route[] = [
+  {
+    path: '/',
+    component: MainPage,
+  },
+  {
+    path: '/write',
+    component: WritePage,
+  },
+  {
+    path: '/detail',
+    component: DetailPage,
+  },
+]
+
+const router = (routes: Route[]) => {
+  const match = routes.map((route) => {
+    return {
+      route,
+      isMatch: route.path === location.pathname,
+    }
+  })
+
+  const target = match.find((item) => item.isMatch === true)
+  console.log(target)
+
+  const root = document.querySelector('#root')! as HTMLElement
+  if (target) {
+    const obj = new target.route.component()
+    root.innerHTML = obj.render()
+    const toMain = document.querySelector('.toMain')
+    toMain?.addEventListener('click', () => {
+      history.pushState('null', 'null', '/')
+      router(routes)
+    })
+    const toWrite = document.querySelector('.toWrite')
+    const toDetail = document.querySelector('.toDetail')
+    toWrite?.addEventListener('click', () => {
+      history.pushState('null', 'null', '/write')
+      router(routes)
+    })
+    toDetail?.addEventListener('click', () => {
+      history.pushState('null', 'null', '/detail')
+      router(routes)
+    })
+  } else {
+    const obj = new notFoundPage()
+    root.innerHTML = obj.render()
+    const toMain = document.querySelector('.toMain')
+    toMain?.addEventListener('click', () => {
+      history.pushState('null', 'null', '/')
+      router(routes)
+    })
   }
 }
 
-new App(document.getElementById('root')! as HTMLElement)
+// const toWrite = document.querySelector('.toWrite')
+// const toDetail = document.querySelector('.toDetail')
+// const toMain = document.querySelector('.toMain')
 
-window.onpopstate = function (event) {
-  console.log('스테이트', event.state)
-  App.render(`<h1>디테일 페이지</h1>`)
-}
+// toWrite?.addEventListener('click', () => {
+//   history.pushState('null', 'null', '/write')
+//   router(routes)
+// })
+// toDetail?.addEventListener('click', () => {
+//   history.pushState('null', 'null', '/detail')
+//   router(routes)
+// })
+// toMain?.addEventListener('click', () => {
+//   history.pushState('null', 'null', '/')
+//   router(routes)
+// })
+
+window.addEventListener('popstate', (e) => {
+  console.log(e)
+  router(routes)
+})
+
+// new App(document.getElementById('root')! as HTMLElement)
+
+window.addEventListener('DOMContentLoaded', () => {
+  router(routes)
+})
