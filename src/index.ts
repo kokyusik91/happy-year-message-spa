@@ -2,7 +2,7 @@ import MainPage from './pages/mainpage'
 import DetailPage from './pages/detailpage'
 import WritePage from './pages/writepage'
 import notFoundPage from './pages/notFoundpage'
-import { Route } from './types/index'
+import { Route, Replace } from './types/index'
 
 import '../styles/index.scss'
 
@@ -31,12 +31,14 @@ class Router {
     })
   }
 
-  public navigate(url?: string) {
-    history.pushState('null', 'null', url)
+  public navigate(url: string, replaceOption?: Replace) {
+    if (replaceOption?.replace) {
+      history.replaceState('null', 'null', url)
+    } else history.pushState('null', 'null', url)
     this.router()
   }
 
-  private router() {
+  private async router() {
     const advancedRoutes = this.mainRoute?.map((route) => {
       return {
         route,
@@ -49,7 +51,7 @@ class Router {
     if (targetPage) {
       // 실제 타켓 페이지 인스턴스화
       const componentInstance = new targetPage.route.component(this.root)
-      componentInstance.render()
+      await componentInstance.render()
     } else {
       this.root.innerHTML = new notFoundPage().render()
     }
