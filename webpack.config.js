@@ -17,6 +17,7 @@ module.exports = {
     port: 9000,
     hot: true,
     compress: true,
+    // historyApiFallBack: 히스토리 API를 사용하는 SPA 개발시 설정한다. 404가 발생하면 index.html로 리다이렉트한다.
     historyApiFallback: true,
     liveReload: true,
   },

@@ -1,10 +1,16 @@
 // 최상위 변수들
 @import './constants/color';
+@import './constants/typography';
 
 // 초기화 하는 css들
 @import './base/normalize';
 @import './base/reset';
 @import './base/global';
 
+@import './mixin/text-style';
+
+// 기본 레이아웃
+@import './layouts/body';
+
 // 요소들
-@import './components/element.scss';
+@import './components/element';

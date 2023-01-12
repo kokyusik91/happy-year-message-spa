@@ -1,0 +1,150 @@
+@mixin text-style-9() {
+  font-size: $font-size-9;
+  line-height: $line-height-9;
+  letter-spacing: $letter-spacing-9;
+}
+
+@mixin text-style-11() {
+  font-size: $font-size-11;
+  line-height: $line-height-11;
+  letter-spacing: $letter-spacing-11;
+}
+
+@mixin text-style-13() {
+  font-size: $font-size-13;
+  line-height: $line-height-13;
+  letter-spacing: $letter-spacing-13;
+}
+
+@mixin text-style-14() {
+  font-size: $font-size-14;
+  line-height: $line-height-14;
+  letter-spacing: $letter-spacing-14;
+}
+
+@mixin text-style-15() {
+  font-size: $font-size-15;
+  line-height: $line-height-15;
+  letter-spacing: $letter-spacing-15;
+}
+
+@mixin text-style-16() {
+  font-size: $font-size-16;
+  line-height: $line-height-16;
+  letter-spacing: $letter-spacing-16;
+}
+
+@mixin text-style-17() {
+  font-size: $font-size-17;
+  line-height: $line-height-17;
+  letter-spacing: $letter-spacing-17;
+}
+
+@mixin text-style-19() {
+  font-size: $font-size-19;
+  line-height: $line-height-19;
+  letter-spacing: $letter-spacing-19;
+}
+
+@mixin text-style-21() {
+  font-size: $font-size-21;
+  line-height: $line-height-21;
+  letter-spacing: $letter-spacing-21;
+}
+
+@mixin text-style-24() {
+  font-size: $font-size-24;
+  line-height: $line-height-24;
+  letter-spacing: $letter-spacing-24;
+}
+
+@mixin text-style-27() {
+  font-size: $font-size-27;
+  line-height: $line-height-27;
+  letter-spacing: $letter-spacing-27;
+}
+
+@mixin text-style-29() {
+  font-size: $font-size-29;
+  line-height: $line-height-29;
+  letter-spacing: $letter-spacing-29;
+}
+
+@mixin text-style-32() {
+  font-size: $font-size-32;
+  line-height: $line-height-32;
+  letter-spacing: $letter-spacing-32;
+}
+
+@mixin text-style-36() {
+  font-size: $font-size-36;
+  line-height: $line-height-36;
+  letter-spacing: $letter-spacing-36;
+}
+
+@mixin text-style-40() {
+  font-size: $font-size-40;
+  line-height: $line-height-40;
+  letter-spacing: $letter-spacing-40;
+}
+
+@mixin text-style-48() {
+  font-size: $font-size-48;
+  line-height: $line-height-48;
+  letter-spacing: $letter-spacing-48;
+}
+
+@mixin text-style($size, $color: false) {
+  @if ($size == 9) {
+    @include text-style-9;
+  }
+  @if ($size == 11) {
+    @include text-style-11;
+  }
+  @if ($size == 13) {
+    @include text-style-13;
+  }
+  @if ($size == 14) {
+    @include text-style-14;
+  }
+  @if ($size == 15) {
+    @include text-style-15;
+  }
+  @if ($size == 16) {
+    @include text-style-16;
+  }
+  @if ($size == 17) {
+    @include text-style-17;
+  }
+  @if ($size == 19) {
+    @include text-style-19;
+  }
+  @if ($size == 21) {
+    @include text-style-21;
+  }
+  @if ($size == 24) {
+    @include text-style-24;
+  }
+  @if ($size == 27) {
+    @include text-style-27;
+  }
+  @if ($size == 29) {
+    @include text-style-29;
+  }
+  @if ($size == 32) {
+    @include text-style-32;
+  }
+  @if ($size == 36) {
+    @include text-style-36;
+  }
+  @if ($size == 40) {
+    @include text-style-40;
+  }
+  @if ($size == 48) {
+    @include text-style-48;
+  }
+
+  @if (type-of($color) == color) {
+    color: $color;
+  }
+}
