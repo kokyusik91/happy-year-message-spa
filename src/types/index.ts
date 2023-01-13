@@ -43,7 +43,27 @@ export type Comment = {
   content: string
 }
 
+export type CommentResponseModel = {
+  code: number
+  data: Comment
+}
+
 export interface Page {
   makeTemplate: () => string
   render: () => void
+}
+
+export type Code = Pick<CommentResponseModel, 'code'>
+
+export type ExtraImageInfo = {
+  imageDesc: string
+  downloads: number
+  likes: number
+  views: number
+}
+
+export type HeaderProps = {
+  title: string
+  subTitle: string
+  buttonTemplate?: string
 }

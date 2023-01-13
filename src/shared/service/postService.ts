@@ -1,10 +1,10 @@
-import { BASE_URL } from '../constants/index'
+import { BASE_URL } from '../../constants/index'
 import {
   Post,
   PostPreview,
   postRequestModel,
   postsResponseModel,
-} from '../types/index'
+} from '../../types/index'
 
 export const fetchUnsplashImage = async (apikey: string): Promise<any> => {
   return await fetch(
@@ -67,6 +67,23 @@ const postService = {
         callbackFunc()
         return res.json()
       } else throw new Error('There is something wrong....')
+    })
+  },
+
+  deletePost: async (
+    postId: number,
+    callbackFunc: () => void,
+  ): Promise<any> => {
+    return await fetch(`${BASE_URL}/post/${postId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then((res) => {
+      if (res.ok) {
+        callbackFunc()
+        return res.json()
+      } else throw new Error('Network is something wrong.....')
     })
   },
 }
