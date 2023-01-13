@@ -1,10 +1,6 @@
 import { routerInstance } from '../index'
-import {
-  $,
-  fetchUnsplashImage,
-  handleButtonDisabled,
-  uploadPost,
-} from '../shared/utils'
+import { $, handleButtonDisabled } from '../shared/utils'
+import postService, { fetchUnsplashImage } from '../shared/api'
 import { UNSPLAH_ACCESS_KEY } from '../constants/index'
 
 type extraImageInfo = {
@@ -127,7 +123,7 @@ class WritePage {
       try {
         fetching = true
         handleButtonDisabled(fetching, submitButton)
-        await uploadPost(data, () => {
+        await postService.uploadPost(data, () => {
           alert('제출에 성공하였습니다!')
           routerInstance.navigate('/', { replace: true })
         })
