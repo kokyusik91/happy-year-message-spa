@@ -1,14 +1,9 @@
 import { routerInstance } from '../index'
 import { $, handleButtonDisabled } from '../shared/utils'
-import postService, { fetchUnsplashImage } from '../shared/api'
+import postService, { fetchUnsplashImage } from '../shared/service/postService'
 import { UNSPLAH_ACCESS_KEY } from '../constants/index'
-import { Page } from '../types/index'
-
-type extraImageInfo = {
-  imageDesc: string
-  downloads: number
-  likes: number
-}
+import { ExtraImageInfo, Page } from '../types/index'
+import CommonHeader from '../components/Header'
 
 class WritePage implements Page {
   constructor(private root: HTMLElement) {}
@@ -16,9 +11,9 @@ class WritePage implements Page {
   private imageAttach(
     targetElement: HTMLElement,
     imageUrl: string,
-    args: extraImageInfo,
+    args: ExtraImageInfo,
   ) {
-    const { imageDesc, downloads, likes } = args
+    const { imageDesc, downloads, likes, views } = args
     const imageContainerTemplate = `
                 <h3>🎨 미리보기 이미지</h3>
                 <img src=${imageUrl} alt=${imageDesc}/>   
@@ -28,8 +23,12 @@ class WritePage implements Page {
                       <dd>${imageDesc}</dd>
                     </div>
                     <div class='data-wrapper'>
+                      <dt>👀 조회 수</dt>
+                      <dd>${views.toLocaleString('ko-KR')} 개</dd>
+                    </div>
+                    <div class='data-wrapper'>
                       <dt>💾 다운로드 수</dt>
-                      <dd>${downloads} 개</dd>
+                      <dd>${downloads.toLocaleString('ko-KR')} 개</dd>
                     </div>
                     <div class='data-wrapper'>
                       <dt>💕 좋아요 수</dt>
@@ -41,15 +40,12 @@ class WritePage implements Page {
   }
 
   makeTemplate() {
-    return `<header class='main-header'>
-              <nav>
-                <button class='back-button'>👈🏻</button>
-                <h1>Happy New Year 🎉</h1>
-              </nav>
-              <div class='main-header-notice'>
-                <p>새해 인사를 나눠 보아요 🥳</p>
-              </div>
-            </header>
+    return `
+            ${CommonHeader.makeTemplate({
+              title: 'Happy New Year 🎉',
+              subTitle: '게시글을 작성해 보세요! 🖋️',
+              buttonTemplate: '<button class="back-button">👈🏻</button>',
+            })}
             <section class='main-content otherpage'>
               <div class='input-container'>
                 <label for="title">제목</label>
@@ -90,13 +86,14 @@ class WritePage implements Page {
       fetching = true
       handleButtonDisabled(fetching, randomImageTriggerButton)
       const response = await fetchUnsplashImage(UNSPLAH_ACCESS_KEY)
-      imageUrl = response.urls.raw
+      imageUrl = response.urls.small
       imageDesc = response.alt_description
-      const { downloads, likes } = response
+      const { downloads, likes, views } = response
       this.imageAttach(imageContainer, imageUrl, {
         imageDesc,
         downloads,
         likes,
+        views,
       })
       fetching = false
       handleButtonDisabled(fetching, randomImageTriggerButton)

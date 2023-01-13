@@ -1,21 +1,19 @@
 import { routerInstance } from '../index'
-import postService from '../shared/api'
+import postService from '../shared/service/postService'
 import { changeToLocalTime, $ } from '../shared/utils'
 import { Page } from '../types/index'
+
+import CommonHeader from '../components/Header'
 
 class MainPage implements Page {
   constructor(private root: HTMLElement) {}
 
   makeTemplate() {
-    return `<header class='main-header'>
-              <nav>
-                <button></button>
-                <h1>Happy New Year 🎉</h1>
-              </nav>
-              <div class='main-header-notice'>
-                <p>무슨 인사들이 올라왔을까요? 😊</p>
-              </div>
-            </header>
+    return `
+            ${CommonHeader.makeTemplate({
+              title: 'Happy New Year 2013 🐰',
+              subTitle: '무슨 인사들이 올라왔을까요? 😊',
+            })}
             <section class='main-content'>
               <h1 class='visually-hidden'>게시글 목록 리스트</h1>
               <ul class='post-list'>
@@ -61,7 +59,7 @@ class MainPage implements Page {
     ulElement.addEventListener('click', (e: any) => {
       if (e.target.nodeName === 'LI') {
         const postId = e.target.dataset.id
-        routerInstance.navigate(`/edit/:id`)
+        routerInstance.navigate(`/post/:id`)
       }
     })
   }

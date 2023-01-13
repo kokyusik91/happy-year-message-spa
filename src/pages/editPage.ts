@@ -1,5 +1,6 @@
+import CommonHeader from '../components/Header'
 import { routerInstance } from '../index'
-import postService from '../shared/api'
+import postService from '../shared/service/postService'
 import { $, handleButtonDisabled } from '../shared/utils'
 import { PostPreview } from '../types/index'
 
@@ -9,15 +10,11 @@ class EditPage {
   makeTemplate(post: PostPreview) {
     const { title, content, image } = post
     return `
-            <header class='main-header'>
-              <nav>
-                <button class='back-button'>👈🏻</button>
-                <h1>Happy New Year 🎉</h1>
-              </nav>
-              <div class='main-header-notice'>
-                <p>게시글을 수정해 보세요! 🖋️</p>
-              </div>
-            </header>
+            ${CommonHeader.makeTemplate({
+              title: 'Happy New Year 🎉',
+              subTitle: '게시글을 수정해 보세요! 🖋️',
+              buttonTemplate: '<button class="back-button">👈🏻</button>',
+            })}
             <section class='main-content otherpage'>
               <div class='full-image-container'>
                 <img src=${image} alt=${title} />
@@ -43,7 +40,7 @@ class EditPage {
     let post
 
     // 최초 수정 페이지 진입 했을때, params 받아와서 postId에 할당해주는 로직 넣어야함.
-    const postId: number = 180
+    const postId: number = 197
 
     try {
       const response = await postService.getPostById(postId)
@@ -53,7 +50,7 @@ class EditPage {
       alert('없는 게시글을 조회 하였습니다!')
       routerInstance.handleNavigateBack()
     }
-
+    // fetch후 post가 있으면 render
     if (post) {
       this.root.innerHTML = this.makeTemplate(post)
     }
