@@ -1,6 +1,7 @@
 .input-container {
   display: flex;
   flex-direction: column;
+  margin-bottom: 24px;
 
   label {
     margin-bottom: 8px;
@@ -30,8 +31,8 @@
   }
 }
 
-.input-container:first-child {
-  margin-bottom: 24px;
+.input-container.last {
+  margin-bottom: 0;
 }
 
 .small-button {
@@ -48,6 +49,7 @@
 
 .normal-button {
   margin-top: 48px;
+  margin-bottom: 16px;
   width: 100%;
   height: 54px;
   @include text-style(16);

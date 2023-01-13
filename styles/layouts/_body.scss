@@ -54,7 +54,7 @@ body {
 .main-content {
   margin-top: 123px;
   padding: 16px 0;
-  overflow: auto;
+  overflow: scroll;
   height: calc(100vh - 123px);
 }
 
