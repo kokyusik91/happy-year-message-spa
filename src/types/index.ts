@@ -16,15 +16,34 @@ export type postRequestModel = {
 export type postsResponseModel = {
   code: number
   data: {
-    posts: Post[]
+    posts: PostPreview[]
   }
 }
 
-export type Post = {
-  postId: number
+export type PostPreview = {
+  postId: string
   title: string
   content: string
   image: string
   createdAt: string
   updatedAt: string
+}
+
+export type Post = {
+  code: number
+  data: {
+    post: PostPreview
+    comments: Comment[]
+  }
+}
+
+export type Comment = {
+  commentId: string
+  postId: string
+  content: string
+}
+
+export interface Page {
+  makeTemplate: () => string
+  render: () => void
 }
