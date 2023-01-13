@@ -6,7 +6,6 @@ body {
   position: relative;
   margin: 0 auto;
   max-width: 600px;
-
   background-color: $white;
 }
 
@@ -20,12 +19,17 @@ body {
   height: 52 + 55 + 16px;
   background-color: $white;
 
-  h1 {
+  nav {
     width: 100%;
-    text-align: end;
-    padding: 8px 16px;
-    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: $green;
+    margin-bottom: 16px;
+    padding: 8px 16px;
+  }
+
+  h1 {
     color: $white;
     @include text-style(24);
     font-weight: 700;
@@ -54,57 +58,19 @@ body {
   height: calc(100vh - 123px);
 }
 
+.main-content.otherpage {
+  padding: 24px 16px 0;
+}
+
 .main-footer {
   position: absolute;
   bottom: 16px;
   right: 16px;
 }
+
 .fab-button {
   padding: 20px;
   border-radius: 20px;
+  background-color: $green;
   @include text-style(16);
-}
-
-.post-list {
-  padding: 0 16px;
-}
-
-.post-list-item {
-  display: flex;
-  padding: 16px 0;
-  border-bottom: 1px solid $border;
-
-  .post-image {
-    flex-shrink: 0;
-    margin-right: 16px;
-    width: 120px;
-    height: 120px;
-    overflow: hidden;
-
-    img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      border-radius: 8px;
-    }
-  }
-
-  .post-info {
-    flex: 1;
-
-    h2 {
-      margin-bottom: 12px;
-      color: $primary;
-      @include text-style(19);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    p {
-      color: $text;
-      @include text-style(16);
-      line-height: 24px;
-    }
-  }
 }
