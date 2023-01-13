@@ -1,0 +1,139 @@
+.main-content.fixed {
+  overflow: visible;
+  height: 100%;
+}
+
+.detailpage-content {
+  background-color: $white;
+  padding: 20px 0;
+  margin-bottom: 24px;
+  border-bottom: 2px solid $border;
+
+  &-image {
+    padding: 0 16px;
+    width: 100%;
+    height: 200px;
+    margin-bottom: 20px;
+    overflow: hidden;
+
+    img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 16px;
+    }
+  }
+
+  &-header {
+    width: 100%;
+    padding: 0 16px;
+    h1 {
+      margin-bottom: 10px;
+      @include text-style(24);
+      color: $primary;
+      font-weight: 500;
+    }
+    time {
+      @include text-style(13);
+      color: $text;
+    }
+  }
+
+  &-body {
+    padding: 0 16px;
+    .content {
+      @include text-style(16);
+      line-height: 24px;
+      color: $text;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  }
+
+  &-footer {
+    padding: 0 16px;
+    display: flex;
+    justify-content: flex-end;
+
+    .action-button {
+      padding: 8px 16px;
+      color: $white;
+      @include text-style(13);
+      font-weight: 500;
+      border-radius: 8px;
+    }
+    .action-button.modify {
+      background-color: $green;
+    }
+    .action-button.delete {
+      margin-left: 16px;
+      background-color: $red;
+    }
+  }
+}
+
+.reply {
+  padding: 0 16px;
+  margin-bottom: 24px;
+  &-count {
+    margin-bottom: 16px;
+    @include text-style(21);
+    font-weight: 500;
+  }
+
+  &-list-item {
+    display: flex;
+    padding: 16px 0;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid $border;
+
+    & > p {
+      @include text-style(13);
+      margin-right: 12px;
+    }
+
+    .delete-button {
+      flex-shrink: 0;
+      padding: 6px 10px;
+      color: $white;
+      @include text-style(11);
+      font-weight: 500;
+      border-radius: 8px;
+      background-color: $red;
+    }
+  }
+}
+
+.detailpage-footer {
+  width: 100%;
+  padding: 0 16px;
+  display: flex;
+
+  &-input {
+    flex: 1;
+    margin-right: 8px;
+    padding: 16px;
+    border: 1px solid $border;
+    border-radius: 8px;
+
+    &:focus {
+      outline: none !important;
+      border-color: $green;
+    }
+
+    &::placeholder {
+      color: $tertiary;
+    }
+  }
+
+  &-button {
+    flex-shrink: 0;
+    padding: 8px 16px;
+    color: $white;
+    @include text-style(13);
+    font-weight: 500;
+    border-radius: 8px;
+    background-color: $green;
+  }
+}
