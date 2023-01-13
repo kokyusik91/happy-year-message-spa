@@ -1,6 +1,120 @@
-button {
+.input-container {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    margin-bottom: 8px;
+    @include text-style(13);
+  }
+
+  #title,
+  #content {
+    padding: 16px;
+    border: 1px solid $border;
+    border-radius: 14px;
+  }
+
+  #title::placeholder,
+  #content::placeholder {
+    color: $tab;
+  }
+
+  #title:focus,
+  #content:focus {
+    outline: none !important;
+    border-color: $green;
+  }
+
+  #content {
+    resize: none;
+  }
+}
+
+.input-container:first-child {
+  margin-bottom: 24px;
+}
+
+.small-button {
+  margin: 0 0 0 auto;
+  display: block;
+
+  margin-top: 24px;
+  padding: 16px 16px;
   background-color: $green;
-  padding: 20px 10px;
+  @include text-style(16);
+  border-radius: 14px;
   color: $white;
-  border-radius: 4px;
+}
+
+.normal-button {
+  margin-top: 48px;
+  width: 100%;
+  height: 54px;
+  @include text-style(16);
+  font-weight: 600;
+  color: $white;
+  background-color: $green;
+  border-radius: 14px;
+}
+
+.random-image-trigger[disabled] {
+  background-color: $secondary;
+  cursor: not-allowed;
+}
+
+.submit[disabled] {
+  background-color: $secondary;
+  cursor: not-allowed;
+}
+
+.full-image-container {
+  width: 100%;
+  margin-top: 24px;
+  padding: 16px 0;
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: $background;
+
+  h3 {
+    padding: 0 16px;
+    margin-bottom: 24px;
+  }
+
+  img {
+    display: block;
+    background-color: $green-light;
+    width: 100%;
+    border-radius: 12px;
+  }
+
+  dl {
+    margin-top: 24px;
+    padding: 0 16px;
+  }
+
+  .data-wrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+
+    dt {
+      flex-shrink: 0;
+      font-weight: 500;
+    }
+
+    dd {
+      @include text-style(14);
+      color: $text;
+      font-weight: 500;
+    }
+
+    dt::after {
+      content: ':';
+      margin: 0 8px;
+    }
+  }
+
+  .data-wrapper:last-child {
+    margin-bottom: 0;
+  }
 }
