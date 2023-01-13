@@ -1,14 +1,21 @@
 import { routerInstance } from '../index'
-import { BaseComponent } from '../components/baseComponent'
+import postService from '../shared/api'
+
+const changeToLocalTime = (time: string) => {
+  return time.split('T')[0]
+}
 
 class MainPage {
   constructor(private root: HTMLElement) {}
 
   makeTemplate() {
     return `<header class='main-header'>
-              <h1>Happy New Year 🎉</h1>
+              <nav>
+                <button></button>
+                <h1>Happy New Year 🎉</h1>
+              </nav>
               <div class='main-header-notice'>
-                <p>새해 인사를 나눠 보아요 🥳</p>
+                <p>무슨 인사들이 올라왔을까요? 😊</p>
               </div>
             </header>
             <section class='main-content'>
@@ -25,14 +32,8 @@ class MainPage {
   async render() {
     this.root.innerHTML = this.makeTemplate()
 
-    const response = await fetch('http://43.201.103.199/posts').then((res) => {
-      if (res.ok) {
-        return res.json()
-      }
-    })
-
-    const { data } = response
-    const posts = data.posts
+    const response = await postService.getPosts()
+    const { posts } = response.data
 
     const template = posts
       .map((post: any) => {
@@ -44,13 +45,11 @@ class MainPage {
                   <div class='post-info'>
                     <h2 class='post-info-title'>${post.title}</h2>
                     <p class='post-info-desc'>${post.content}</p>
+                    <time>${changeToLocalTime(post.createdAt)}</time>
                   </div>
-            
                 </li>`
       })
       .join('')
-
-    console.log(template)
 
     const fabButton = document.querySelector('.fab-button')
     fabButton?.addEventListener('click', () => {
