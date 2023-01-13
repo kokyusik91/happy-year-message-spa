@@ -2,6 +2,7 @@ import { routerInstance } from '../index'
 import { $, handleButtonDisabled } from '../shared/utils'
 import postService, { fetchUnsplashImage } from '../shared/api'
 import { UNSPLAH_ACCESS_KEY } from '../constants/index'
+import { Page } from '../types/index'
 
 type extraImageInfo = {
   imageDesc: string
@@ -9,7 +10,7 @@ type extraImageInfo = {
   likes: number
 }
 
-class WritePage {
+class WritePage implements Page {
   constructor(private root: HTMLElement) {}
 
   private imageAttach(
@@ -54,7 +55,7 @@ class WritePage {
                 <label for="title">제목</label>
                 <input id='title' class='title' type='text' placeholder='제목을 작성해 주세요!'/>
               </div>
-              <div class='input-container'>
+              <div class='input-container last'>
                 <label for="content">내용</label>
                 <textarea id='content' class='content' cols="100" rows="10" placeholder='내용을 작성해 주세요!'></textarea>
               </div>
@@ -125,7 +126,7 @@ class WritePage {
         handleButtonDisabled(fetching, submitButton)
         await postService.uploadPost(data, () => {
           alert('제출에 성공하였습니다!')
-          routerInstance.navigate('/', { replace: true })
+          routerInstance.handleNavigateBack()
         })
       } catch (err) {
         alert(err)

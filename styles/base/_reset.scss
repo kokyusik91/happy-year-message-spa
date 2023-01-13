@@ -4,6 +4,13 @@
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
   font-family: 'Spoqa Han Sans Neo', 'sans-serif' !important;
+  ::-webkit-scrollbar-thumb {
+    background-color: $green;
+  }
+
+  ::-webkit-scrollbar-track {
+    background-color: $green-light;
+  }
 }
 
 html {

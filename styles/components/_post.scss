@@ -3,9 +3,11 @@
 }
 
 .post-list-item {
+  width: 100%;
   display: flex;
   padding: 16px 0;
   border-bottom: 1px solid $border;
+  cursor: pointer;
 
   .post-image {
     order: 2;
@@ -13,8 +15,9 @@
     margin-left: 16px;
     width: 80px;
     height: 80px;
+    background-color: $green-light;
     overflow: hidden;
-
+    pointer-events: none;
     img {
       display: block;
       width: 100%;
@@ -29,6 +32,7 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    pointer-events: none;
 
     h2 {
       width: 100%;

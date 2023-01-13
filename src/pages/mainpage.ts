@@ -1,11 +1,9 @@
 import { routerInstance } from '../index'
 import postService from '../shared/api'
+import { changeToLocalTime, $ } from '../shared/utils'
+import { Page } from '../types/index'
 
-const changeToLocalTime = (time: string) => {
-  return time.split('T')[0]
-}
-
-class MainPage {
+class MainPage implements Page {
   constructor(private root: HTMLElement) {}
 
   makeTemplate() {
@@ -32,6 +30,9 @@ class MainPage {
   async render() {
     this.root.innerHTML = this.makeTemplate()
 
+    const fabButton = $('.fab-button')
+    const ulElement = $('.post-list')! as HTMLUListElement
+
     const response = await postService.getPosts()
     const { posts } = response.data
 
@@ -51,13 +52,18 @@ class MainPage {
       })
       .join('')
 
-    const fabButton = document.querySelector('.fab-button')
     fabButton?.addEventListener('click', () => {
       routerInstance.navigate('/write')
     })
 
-    const ulTag = document.querySelector('.post-list')! as HTMLUListElement
-    ulTag.insertAdjacentHTML('beforeend', template)
+    ulElement.insertAdjacentHTML('beforeend', template)
+
+    ulElement.addEventListener('click', (e: any) => {
+      if (e.target.nodeName === 'LI') {
+        const postId = e.target.dataset.id
+        routerInstance.navigate(`/edit/:id`)
+      }
+    })
   }
 }
 
