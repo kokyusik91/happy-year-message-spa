@@ -5,10 +5,12 @@ import postService from '../shared/service/postService'
 import { PostPreview, Comment } from '../types/index'
 import commentService from '../shared/service/commentService'
 
-import CommonHeader from '../components/Header'
+import CommonHeader from '../components/CommonHeader'
 
 class DetailPage {
-  constructor(private root: HTMLElement) {}
+  constructor(private root: HTMLElement, private params: any) {
+    console.log(this.params)
+  }
 
   attchComment(targetElement: HTMLElement, comments: Comment[]) {
     const commentTemplate = comments
@@ -78,9 +80,10 @@ class DetailPage {
     }
     let comments: Comment[] = []
 
+    const { id } = this.params
+
     // 최초 수정 페이지 진입 했을때, params 받아와서 postId에 할당해주는 로직 넣어야함.
-    const postId: number = 197
-    let commentCount = 0
+    const postId: number = +id
 
     try {
       const response = await postService.getPostById(postId)
@@ -115,7 +118,7 @@ class DetailPage {
     })
 
     modifyButton.addEventListener('click', () => {
-      routerInstance.navigate(`/edit/:id`)
+      routerInstance.navigate(`/edit/${postId}`)
     })
 
     deleteButton.addEventListener('click', async () => {

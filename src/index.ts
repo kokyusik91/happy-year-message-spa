@@ -1,10 +1,15 @@
 import MainPage from './pages/mainpage'
 import DetailPage from './pages/detailpage'
 import WritePage from './pages/writepage'
+import EditPage from './pages/editPage'
 import notFoundPage from './pages/notFoundpage'
 import { Route, Replace } from './types/index'
 
 import '../styles/index.scss'
+
+// regex를 return 하는 함수!
+const pathToRegex = (path: string) =>
+  new RegExp('^' + path.replace(/\//g, '\\/').replace(/:\w+/g, '(.+)') + '$')
 
 const routes = [
   {
@@ -21,7 +26,7 @@ const routes = [
   },
   {
     path: '/edit/:id',
-    page: DetailPage,
+    page: EditPage,
   },
 ]
 
@@ -39,8 +44,8 @@ class Router {
   // 페이지 이동할때 쓸 함수
   public navigate(url: string, replaceOption?: Replace) {
     if (replaceOption?.replace) {
-      history.replaceState('null', 'null', url)
-    } else history.pushState('null', 'null', url)
+      history.replaceState(null, 'null', url)
+    } else history.pushState(null, 'null', url)
     this.router()
   }
 
@@ -48,22 +53,50 @@ class Router {
     history.back()
   }
 
+  private getParams(targetPage: any) {
+    const values = targetPage.result.slice(1)
+    const keys = Array.from(targetPage.route.path.matchAll(/:(\w+)/g)).map(
+      (result: any) => result[1],
+    )
+
+    const paramsList = Object.fromEntries(
+      keys.map((key, index) => {
+        return [key, values[index]]
+      }),
+    )
+
+    return paramsList
+  }
+
   private async router() {
     const advancedRoutes = this.mainRoute?.map((route) => {
       return {
         route,
-        isMatch: route.path === window.location.pathname,
+        result: location.pathname.match(pathToRegex(route.path)),
       }
     })
 
-    const targetPage = advancedRoutes.find((targetRoute) => targetRoute.isMatch)
+    let targetPage = advancedRoutes.find(
+      (targetRoute) => targetRoute.result !== null,
+    )
 
     if (targetPage) {
       // 실제 타켓 페이지 인스턴스화
-      const pageInstance = new targetPage.route.page(this.root)
+      const pageInstance = new targetPage.route.page(
+        this.root,
+        this.getParams(targetPage),
+      )
       await pageInstance.render()
     } else {
-      new notFoundPage(this.root).render()
+      targetPage = {
+        route: routes[0],
+        result: [location.pathname],
+      }
+      const pageInstance = new targetPage.route.page(
+        this.root,
+        this.getParams(targetPage),
+      )
+      await pageInstance.render()
     }
   }
 }
