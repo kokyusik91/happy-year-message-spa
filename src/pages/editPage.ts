@@ -1,11 +1,15 @@
-import CommonHeader from '../components/Header'
 import { routerInstance } from '../index'
 import postService from '../shared/service/postService'
 import { $, handleButtonDisabled } from '../shared/utils'
 import { PostPreview } from '../types/index'
 
+import CommonHeader from '../components/CommonHeader'
+import CommonInput from '../components/CommonInput'
+
 class EditPage {
-  constructor(private root: HTMLElement) {}
+  constructor(private root: HTMLElement, private params: any) {
+    console.log(this.params)
+  }
   // makeTemplate을 최초의 페이지 렌더링을 하고
   makeTemplate(post: PostPreview) {
     const { title, content, image } = post
@@ -19,10 +23,7 @@ class EditPage {
               <div class='full-image-container'>
                 <img src=${image} alt=${title} />
               </div>
-              <div class='input-container'>
-                <label for="title">제목</label>
-                <input id='title' class='title' type='text' value=${title} placeholder='제목을 작성해 주세요!'/>
-              </div>
+              ${CommonInput.makeTemplate({ value: title })}
               <div class='input-container last'>
                 <label for="content">내용</label>
                 <textarea id='content' class='content' cols="100" rows="10" placeholder='내용을 작성해 주세요!'>${content}</textarea>
@@ -38,9 +39,9 @@ class EditPage {
   async render() {
     let fetching = false
     let post
-
+    const { id } = this.params
     // 최초 수정 페이지 진입 했을때, params 받아와서 postId에 할당해주는 로직 넣어야함.
-    const postId: number = 197
+    const postId: number = +id
 
     try {
       const response = await postService.getPostById(postId)
