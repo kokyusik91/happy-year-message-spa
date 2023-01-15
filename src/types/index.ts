@@ -61,9 +61,3 @@ export type ExtraImageInfo = {
   likes: number
   views: number
 }
-
-export type HeaderProps = {
-  title: string
-  subTitle: string
-  buttonTemplate?: string
-}
