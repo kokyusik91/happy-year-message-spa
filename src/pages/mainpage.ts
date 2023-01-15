@@ -3,10 +3,12 @@ import postService from '../shared/service/postService'
 import { changeToLocalTime, $ } from '../shared/utils'
 import { Page } from '../types/index'
 
-import CommonHeader from '../components/Header'
+import CommonHeader from '../components/CommonHeader'
 
 class MainPage implements Page {
-  constructor(private root: HTMLElement) {}
+  constructor(private root: HTMLElement, private params: any) {
+    console.log(this.params)
+  }
 
   makeTemplate() {
     return `
@@ -59,7 +61,7 @@ class MainPage implements Page {
     ulElement.addEventListener('click', (e: any) => {
       if (e.target.nodeName === 'LI') {
         const postId = e.target.dataset.id
-        routerInstance.navigate(`/post/:id`)
+        routerInstance.navigate(`/post/${postId}`)
       }
     })
   }

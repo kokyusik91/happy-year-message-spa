@@ -1,4 +1,8 @@
-import { HeaderProps } from '../types/index'
+type HeaderProps = {
+  title: string
+  subTitle: string
+  buttonTemplate?: string
+}
 
 class CommonHeader {
   static makeTemplate({

@@ -3,10 +3,13 @@ import { $, handleButtonDisabled } from '../shared/utils'
 import postService, { fetchUnsplashImage } from '../shared/service/postService'
 import { UNSPLAH_ACCESS_KEY } from '../constants/index'
 import { ExtraImageInfo, Page } from '../types/index'
-import CommonHeader from '../components/Header'
+import CommonHeader from '../components/CommonHeader'
+import CommonInput from '../components/CommonInput'
 
 class WritePage implements Page {
-  constructor(private root: HTMLElement) {}
+  constructor(private root: HTMLElement, private params: any) {
+    console.log(this.params)
+  }
 
   private imageAttach(
     targetElement: HTMLElement,
@@ -47,10 +50,7 @@ class WritePage implements Page {
               buttonTemplate: '<button class="back-button">👈🏻</button>',
             })}
             <section class='main-content otherpage'>
-              <div class='input-container'>
-                <label for="title">제목</label>
-                <input id='title' class='title' type='text' placeholder='제목을 작성해 주세요!'/>
-              </div>
+              ${CommonInput.makeTemplate({})}
               <div class='input-container last'>
                 <label for="content">내용</label>
                 <textarea id='content' class='content' cols="100" rows="10" placeholder='내용을 작성해 주세요!'></textarea>
