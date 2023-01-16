@@ -1,5 +1,10 @@
 import { routerInstance } from '../index'
-import { $, handleButtonDisabled } from '../shared/utils'
+import {
+  $,
+  handleButtonDisabled,
+  handleClickBackBtn,
+  isValid,
+} from '../shared/utils'
 import postService, { fetchUnsplashImage } from '../shared/service/postService'
 import { UNSPLAH_ACCESS_KEY } from '../constants/index'
 import { ExtraImageInfo, Page } from '../types/index'
@@ -7,12 +12,10 @@ import CommonHeader from '../components/CommonHeader'
 import CommonInput from '../components/CommonInput'
 
 class WritePage implements Page {
-  constructor(private root: HTMLElement, private params: any) {
-    console.log(this.params)
-  }
+  constructor(private root: HTMLElement, private params: any) {}
 
-  private imageAttach(
-    targetElement: HTMLElement,
+  private attachPreviewImage(
+    parentElement: HTMLElement,
     imageUrl: string,
     args: ExtraImageInfo,
   ) {
@@ -39,15 +42,16 @@ class WritePage implements Page {
                     </div>
                 </dl>          
     `
-    targetElement.innerHTML = imageContainerTemplate
+    parentElement.innerHTML = imageContainerTemplate
   }
 
-  makeTemplate() {
+  makePageTemplate() {
     return `
             ${CommonHeader.makeTemplate({
               title: 'Happy New Year 🎉',
               subTitle: '게시글을 작성해 보세요! 🖋️',
-              buttonTemplate: '<button class="back-button">👈🏻</button>',
+              buttonTemplate:
+                '<button class="back-button" aria-label="back-handle-button">👈🏻</button>',
             })}
             <section class='main-content otherpage'>
               ${CommonInput.makeTemplate({})}
@@ -65,8 +69,8 @@ class WritePage implements Page {
   async render() {
     let fetching = false
     let imageUrl: string
-    let imageDesc: string = ''
-    this.root.innerHTML = this.makeTemplate()
+    let imageDesc: string
+    this.root.innerHTML = this.makePageTemplate()
 
     const imageContainer = $('.full-image-container')! as HTMLElement
     const backButton = $('.back-button')! as HTMLButtonElement
@@ -77,34 +81,36 @@ class WritePage implements Page {
     )! as HTMLButtonElement
     const submitButton = $('.submit')! as HTMLButtonElement
 
-    backButton.addEventListener('click', () => {
-      routerInstance.handleNavigateBack()
-    })
-
+    // 이미지 미리보기 렌더링
     randomImageTriggerButton.addEventListener('click', async () => {
-      // fetching true 위치 체크!
-      fetching = true
-      handleButtonDisabled(fetching, randomImageTriggerButton)
-      const response = await fetchUnsplashImage(UNSPLAH_ACCESS_KEY)
-      imageUrl = response.urls.small
-      imageDesc = response.alt_description
-      const { downloads, likes, views } = response
-      this.imageAttach(imageContainer, imageUrl, {
-        imageDesc,
-        downloads,
-        likes,
-        views,
-      })
-      fetching = false
-      handleButtonDisabled(fetching, randomImageTriggerButton)
+      try {
+        fetching = true
+        handleButtonDisabled(fetching, randomImageTriggerButton)
+        const response = await fetchUnsplashImage(UNSPLAH_ACCESS_KEY)
+        imageUrl = response.urls.small
+        imageDesc = response.alt_description
+        const { downloads, likes, views } = response
+        this.attachPreviewImage(imageContainer, imageUrl, {
+          imageDesc,
+          downloads,
+          likes,
+          views,
+        })
+        imageContainer.classList.add('attached')
+      } catch (err) {
+        alert(err)
+      } finally {
+        fetching = false
+        handleButtonDisabled(fetching, randomImageTriggerButton)
+      }
     })
-
+    // 게시글 제출하기
     submitButton.addEventListener('click', async () => {
-      if (!input.value.trim()) {
+      if (!isValid(input)) {
         alert('제목을 입력해 주세요!')
         return
       }
-      if (!textField.value.trim()) {
+      if (!isValid(textField)) {
         alert('내용을 입력해주세요!')
         return
       }
@@ -112,7 +118,8 @@ class WritePage implements Page {
         alert('이미지를 추가해 주세요!')
         return
       }
-      const data = {
+
+      const requestData = {
         title: input.value,
         content: textField.value,
         image: imageUrl,
@@ -121,7 +128,7 @@ class WritePage implements Page {
       try {
         fetching = true
         handleButtonDisabled(fetching, submitButton)
-        await postService.uploadPost(data, () => {
+        await postService.uploadPost(requestData, () => {
           alert('제출에 성공하였습니다!')
           routerInstance.handleNavigateBack()
         })
@@ -132,6 +139,8 @@ class WritePage implements Page {
         handleButtonDisabled(fetching, submitButton)
       }
     })
+
+    handleClickBackBtn(backButton)
   }
 }
 
