@@ -1,32 +1,37 @@
 import { routerInstance } from '../index'
-import { $, changeToLocalTime, handleButtonDisabled } from '../shared/utils'
-
 import postService from '../shared/service/postService'
-import { PostPreview, Comment } from '../types/index'
 import commentService from '../shared/service/commentService'
-
 import CommonHeader from '../components/CommonHeader'
 
-class DetailPage {
-  constructor(private root: HTMLElement, private params: any) {
-    console.log(this.params)
-  }
+import {
+  $,
+  changeToLocalTime,
+  handleButtonDisabled,
+  handleClickBackBtn,
+  isValid,
+  stripHTML,
+} from '../shared/utils'
 
-  attchComment(targetElement: HTMLElement, comments: Comment[]) {
+import { PostPreview, Comment } from '../types/index'
+
+class DetailPage {
+  constructor(private root: HTMLElement, private params: any) {}
+
+  attchComment(parentElement: HTMLElement, comments: Comment[]) {
     const commentTemplate = comments
       .map((comment) => {
         return `
             <li class='reply-list-item' data-id=${comment.commentId}>
-              <p>${comment.content}</p>
-              <button class='delete-button'>댓글 삭제</button>
+              <p>${stripHTML(comment.content)}</p>
+              <button class='delete-button submit'>댓글 삭제</button>
             </li>`
       })
       .join('')
 
-    targetElement.insertAdjacentHTML('beforeend', commentTemplate)
+    parentElement.insertAdjacentHTML('beforeend', commentTemplate)
   }
 
-  makeTemplate(post: PostPreview) {
+  makePageTemplate(post: PostPreview) {
     const { title, content, image, createdAt } = post
     return `
             ${CommonHeader.makeTemplate({
@@ -40,13 +45,11 @@ class DetailPage {
                   <img src=${image} alt=${title} />
                 </div>
                 <div class='detailpage-content-header'>
-                  <h1>${title}</h1>
+                  <h1>${stripHTML(title)}</h1>
                   <time>${changeToLocalTime(createdAt)}</time>
                 </div>
                 <div class='detailpage-content-body'>
-                  <pre>
-                    <p class='content'>${content}</p>
-                  </pre>
+                    <p class='content'>${stripHTML(content)}</p>
                 </div>
                 <div class='detailpage-content-footer'>
                   <button class='action-button modify'>수정하기</button>
@@ -55,67 +58,47 @@ class DetailPage {
               </article>
               <article class='reply'>
                 <h1 class='reply-count'>댓글 0</h1>
-                <ul class='reply-list'>
-
-                </ul>
+                <ul class='reply-list'></ul>
               </article>
               </section>
               <footer class='detailpage-footer'>
                 <h1 class='visually-hidden'>댓글 입력 창</h1>
                 <input class='detailpage-footer-input' type='text' placeholder='댓글을 입력해 주세요!' />
-                <button class='detailpage-footer-button'>댓글 입력</button>
+                <button class='detailpage-footer-button submit'>댓글 입력</button>
               </footer>
             `
   }
 
   async render() {
     let fetching = false
-    let post: PostPreview = {
-      postId: '',
-      title: '',
-      content: '',
-      createdAt: '',
-      image: '',
-      updatedAt: '',
-    }
     let comments: Comment[] = []
 
     const { id } = this.params
-
-    // 최초 수정 페이지 진입 했을때, params 받아와서 postId에 할당해주는 로직 넣어야함.
     const postId: number = +id
 
     try {
       const response = await postService.getPostById(postId)
-      const { post: postData, comments: commentsData } = response.data
-      post = postData
+      const { post, comments: commentsData } = response.data
+      this.root.innerHTML = this.makePageTemplate(post)
       comments = commentsData
     } catch (err) {
       alert('없는 게시글을 조회 하였습니다!')
       routerInstance.handleNavigateBack()
     }
 
-    // 상세페이지 렌더링
-    this.root.innerHTML = this.makeTemplate(post)
-    // 댓글 렌더링
-
     const backButton = $('.back-button')! as HTMLButtonElement
     const modifyButton = $('.modify')! as HTMLButtonElement
     const deleteButton = $('.delete')! as HTMLButtonElement
-    const replyInput = $('.detailpage-footer-input')! as HTMLInputElement
-    const replySubmitButton = $(
+    const commentInput = $('.detailpage-footer-input')! as HTMLInputElement
+    const commentSubmitButton = $(
       '.detailpage-footer-button',
     )! as HTMLButtonElement
-    const replayCount = $('.reply-count')! as HTMLHeadingElement
+    const commentCount = $('.reply-count')! as HTMLHeadingElement
     // 전체 렌더링이 한번 되고 난 시점에 댓글 렌더를 따로 하게 됨 이거 맞나??
-    const replyListElement = $('.reply-list')! as HTMLUListElement
+    const commentListElement = $('.reply-list')! as HTMLUListElement
     // 댓글 리스트가 렌더링 된다.
-    this.attchComment(replyListElement, comments)
-    replayCount.innerText = `댓글 ${replyListElement.childElementCount}`
-
-    backButton.addEventListener('click', () => {
-      routerInstance.handleNavigateBack()
-    })
+    this.attchComment(commentListElement, comments)
+    commentCount.innerText = `댓글 ${commentListElement.childElementCount}`
 
     modifyButton.addEventListener('click', () => {
       routerInstance.navigate(`/edit/${postId}`)
@@ -124,62 +107,71 @@ class DetailPage {
     deleteButton.addEventListener('click', async () => {
       if (confirm('게시글을 정말로 삭제하시겠어요? 🤔')) {
         try {
+          fetching = true
+          handleButtonDisabled(fetching, deleteButton)
           await postService.deletePost(postId, () => {
             alert('게시글이 성공적으로 삭제 되었습니다!')
             routerInstance.handleNavigateBack()
           })
         } catch (err) {
           alert(err)
+        } finally {
+          fetching = false
+          handleButtonDisabled(fetching, deleteButton)
         }
       }
     })
 
-    replySubmitButton.addEventListener('click', async () => {
-      console.log('눌렸다!')
-      if (!replyInput.value.trim()) {
+    commentSubmitButton.addEventListener('click', async () => {
+      if (!isValid(commentInput)) {
         alert('댓글을 입력해 주세요!')
         return
       }
 
       try {
         fetching = true
-        handleButtonDisabled(fetching, replySubmitButton)
+        handleButtonDisabled(fetching, commentSubmitButton)
         const response = await commentService.uploadComment(postId, {
-          content: replyInput.value,
+          content: commentInput.value,
         })
-        replyInput.value = ''
-        const { commentId, content } = response.data
-        const commentTemplate = `
-          <li class='reply-list-item' data-id=${commentId}>
-              <p>${content}</p>
-              <button class='delete-button'>댓글 삭제</button>
-            </li>
-        `
-        replyListElement.insertAdjacentHTML('beforeend', commentTemplate)
-        replayCount.innerText = `댓글 ${replyListElement.childElementCount}`
+        commentInput.value = ''
+        const { data: comment } = response
+        // 메서드 재사용하기 위해 comment(1개)를 배열에 담아서 인자로 넘김
+        this.attchComment(commentListElement, [comment])
+        commentCount.innerText = `댓글 ${commentListElement.childElementCount}`
       } catch (err) {
-        alert(err)
+        alert('중복 댓글은 작성할 수 없습니다.')
       } finally {
         fetching = false
-        handleButtonDisabled(fetching, replySubmitButton)
+        handleButtonDisabled(fetching, commentSubmitButton)
       }
     })
-
-    replyListElement.addEventListener('click', async (e: any) => {
+    // 이벤트 위임 사용
+    commentListElement.addEventListener('click', async (e: any) => {
       if (e.target?.nodeName === 'BUTTON') {
         const element = e.target.closest('.reply-list-item')
         const commentId = element.dataset.id
+        // 선택된 요소의 삭제버튼을 찾아야함!
+        const commentDeleteButton = element.querySelector(
+          '.delete-button',
+        )! as HTMLButtonElement
         try {
+          fetching = true
+          handleButtonDisabled(fetching, commentDeleteButton)
           await commentService.deleteComment(commentId)
           // 뷰에서 댓글 삭제...
-          replyListElement.removeChild(element)
-          const count = replyListElement.childElementCount
-          replayCount.innerText = `댓글 ${count}`
+          commentListElement.removeChild(element)
+          commentCount.innerText = `댓글 ${commentListElement.childElementCount}`
         } catch (err) {
           alert(err)
+        } finally {
+          fetching = false
+          handleButtonDisabled(fetching, commentDeleteButton)
         }
       }
     })
+
+    handleClickBackBtn(backButton)
   }
 }
 

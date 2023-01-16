@@ -88,15 +88,7 @@ class Router {
       )
       await pageInstance.render()
     } else {
-      targetPage = {
-        route: routes[0],
-        result: [location.pathname],
-      }
-      const pageInstance = new targetPage.route.page(
-        this.root,
-        this.getParams(targetPage),
-      )
-      await pageInstance.render()
+      new notFoundPage(this.root).render()
     }
   }
 }
