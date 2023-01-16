@@ -1,19 +1,18 @@
 import { BASE_URL } from '../../constants/index'
 import {
+  Code,
   Post,
   PostPreview,
   postRequestModel,
   postsResponseModel,
 } from '../../types/index'
 
+import { fetchInstance } from './index'
+
 export const fetchUnsplashImage = async (apikey: string): Promise<any> => {
-  return await fetch(
+  return await fetchInstance.get(
     `https://api.unsplash.com/photos/random/?client_id=${apikey}`,
-  ).then((res) => {
-    if (res.ok) {
-      return res.json()
-    } else throw new Error('Network has problems..... ☹️')
-  })
+  )
 }
 
 const postService = {
@@ -21,34 +20,15 @@ const postService = {
     data: postRequestModel,
     callbackFunc: () => void,
   ): Promise<PostPreview> => {
-    return await fetch(`${BASE_URL}/post`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    }).then((res) => {
-      if (res.ok) {
-        callbackFunc()
-        return res.json()
-      } else throw new Error('Network has problems..... ☹️')
-    })
+    return await fetchInstance.post(`${BASE_URL}/post`, data, callbackFunc)
   },
 
   getPosts: async (): Promise<postsResponseModel> => {
-    return await fetch(`${BASE_URL}/posts`).then((res) => {
-      if (res.ok) {
-        return res.json()
-      } else throw new Error('There is something wrong...')
-    })
+    return await fetchInstance.get(`${BASE_URL}/posts`)
   },
 
   getPostById: async (postId: number): Promise<Post> => {
-    return await fetch(`${BASE_URL}/post/${postId}`).then((res) => {
-      if (res.ok) {
-        return res.json()
-      } else throw new Error('There is something wrong....')
-    })
+    return await fetchInstance.get(`${BASE_URL}/post/${postId}`)
   },
 
   updatePost: async (
@@ -56,35 +36,21 @@ const postService = {
     data: postRequestModel,
     callbackFunc: () => void,
   ): Promise<PostPreview> => {
-    return await fetch(`${BASE_URL}/post/${postId}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data),
-    }).then((res) => {
-      if (res.ok) {
-        callbackFunc()
-        return res.json()
-      } else throw new Error('There is something wrong....')
-    })
+    return await fetchInstance.patch(
+      `${BASE_URL}/post/${postId}`,
+      data,
+      callbackFunc,
+    )
   },
 
   deletePost: async (
     postId: number,
     callbackFunc: () => void,
-  ): Promise<any> => {
-    return await fetch(`${BASE_URL}/post/${postId}`, {
-      method: 'DELETE',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then((res) => {
-      if (res.ok) {
-        callbackFunc()
-        return res.json()
-      } else throw new Error('Network is something wrong.....')
-    })
+  ): Promise<Code> => {
+    return await fetchInstance.delete(
+      `${BASE_URL}/post/${postId}`,
+      callbackFunc,
+    )
   },
 }
 

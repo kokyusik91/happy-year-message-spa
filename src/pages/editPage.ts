@@ -1,17 +1,20 @@
 import { routerInstance } from '../index'
 import postService from '../shared/service/postService'
-import { $, handleButtonDisabled } from '../shared/utils'
-import { PostPreview } from '../types/index'
-
 import CommonHeader from '../components/CommonHeader'
 import CommonInput from '../components/CommonInput'
+import {
+  $,
+  handleButtonDisabled,
+  handleClickBackBtn,
+  isValid,
+} from '../shared/utils'
+// types
+import { PostPreview } from '../types/index'
 
 class EditPage {
-  constructor(private root: HTMLElement, private params: any) {
-    console.log(this.params)
-  }
+  constructor(private root: HTMLElement, private params: any) {}
   // makeTemplate을 최초의 페이지 렌더링을 하고
-  makeTemplate(post: PostPreview) {
+  makePageTemplate(post: PostPreview) {
     const { title, content, image } = post
     return `
             ${CommonHeader.makeTemplate({
@@ -35,25 +38,18 @@ class EditPage {
   }
 
   // updateTemplate을 해서 두번 페이지 렌더링을 해야하는건가??
-
   async render() {
     let fetching = false
-    let post
     const { id } = this.params
-    // 최초 수정 페이지 진입 했을때, params 받아와서 postId에 할당해주는 로직 넣어야함.
     const postId: number = +id
 
     try {
       const response = await postService.getPostById(postId)
-      const { post: postData } = response.data
-      post = postData
+      const { post } = response.data
+      this.root.innerHTML = this.makePageTemplate(post)
     } catch (err) {
-      alert('없는 게시글을 조회 하였습니다!')
+      alert('존재하지 않는 게시글 입니다!')
       routerInstance.handleNavigateBack()
-    }
-    // fetch후 post가 있으면 render
-    if (post) {
-      this.root.innerHTML = this.makeTemplate(post)
     }
 
     const backButton = $('.back-button')! as HTMLButtonElement
@@ -64,15 +60,15 @@ class EditPage {
     const imageUrl = imageContainer.querySelector('img')?.getAttribute('src')
 
     submitButton.addEventListener('click', async () => {
-      if (!input.value.trim()) {
+      if (!isValid(input)) {
         alert('제목을 입력해 주세요!')
         return
       }
-      if (!textField.value.trim()) {
+      if (!isValid(textField)) {
         alert('내용을 입력해주세요!')
         return
       }
-      const data = {
+      const requestdata = {
         title: input.value,
         content: textField.value,
         image: imageUrl || '',
@@ -81,7 +77,7 @@ class EditPage {
       try {
         fetching = true
         handleButtonDisabled(fetching, submitButton)
-        await postService.updatePost(postId, data, () => {
+        await postService.updatePost(postId, requestdata, () => {
           alert('수정에 성공하였습니다!')
           routerInstance.handleNavigateBack()
         })
@@ -93,9 +89,7 @@ class EditPage {
       }
     })
 
-    backButton.addEventListener('click', () => {
-      routerInstance.handleNavigateBack()
-    })
+    handleClickBackBtn(backButton)
   }
 }
 
