@@ -1,14 +1,21 @@
-class Fetch {
+interface IFetch {
+  get(url: string, callBackFunc?: () => void): Promise<any>
+  post<T>(url: string, data: T, callBackFunc?: () => void): Promise<any>
+  patch<T>(url: string, data: T, callBackFunc?: () => void): Promise<any>
+  delete(url: string, callBackFunc?: () => void): Promise<any>
+}
+
+class Fetch implements IFetch {
   private headers: { [key: string]: string } = {
     'Content-Type': 'application/json',
   }
 
   private handleAfterFetch(res: Response, callBackFunc?: () => void) {
-    if (res.ok) {
-      callBackFunc && callBackFunc()
-      return res.json()
-    } else
-      throw new Error('There is something wrong... because of network issue 📡')
+    if (!res.ok) {
+      throw new Error('There is something wrong... in Network')
+    }
+    callBackFunc && callBackFunc()
+    return res.json()
   }
 
   public async get(url: string, callBackFunc?: () => void) {
