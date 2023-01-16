@@ -49,11 +49,13 @@ export type CommentResponseModel = {
 }
 
 export interface Page {
-  makeTemplate: () => string
+  makePageTemplate: () => string
   render: () => void
 }
 
 export type Code = Pick<CommentResponseModel, 'code'>
+
+export type CommentRequestModel = Pick<Comment, 'content'>
 
 export type ExtraImageInfo = {
   imageDesc: string
