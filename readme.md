@@ -6,8 +6,6 @@
 
 ## 프로젝트 실행 방법 🚀
 
----
-
 ```
 npm run dev
 ```
@@ -16,15 +14,11 @@ npm run dev
 
 ## 사이트 주소 🪩
 
----
-
 http://ts-spa.s3-website.ap-northeast-2.amazonaws.com/
 
 <br>
 
 ## 페이지 소개 🌁
-
----
 
 <table>
   <tr>
@@ -54,8 +48,6 @@ http://ts-spa.s3-website.ap-northeast-2.amazonaws.com/
 
 ## 기술 스택 🛠️
 
----
-
 - typescript : Class를 좀더 명시적으로 작성 + 타입 지정으로 안전한 코드 작성 위함
 - webpack : spa를 구현하기 위한 환경 셋팅 + 번들러
 - scss : 스타일 코드들을 구분하여 조금 더 효율적으로 관리하기 위한 css 전처리기
@@ -63,8 +55,6 @@ http://ts-spa.s3-website.ap-northeast-2.amazonaws.com/
 <br>
 
 ## 디렉토리 구조 📂
-
----
 
 <details markdown="1">
 <summary>자세히 보기</summary>
@@ -153,8 +143,6 @@ http://ts-spa.s3-website.ap-northeast-2.amazonaws.com/
 
 ## 주요 기능 🧑🏼‍🏫
 
----
-
 - spa기반 페이지 라우팅
 - 게시글 list 조회
 - 게시글 작성
@@ -168,8 +156,6 @@ http://ts-spa.s3-website.ap-northeast-2.amazonaws.com/
 <br>
 
 ## 주요 메서드 및 함수 🧑🏻‍💻
-
----
 
 ### 라우터(핵심)
 
