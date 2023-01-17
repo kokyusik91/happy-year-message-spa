@@ -10,18 +10,25 @@ class Fetch implements IFetch {
     'Content-Type': 'application/json',
   }
 
-  private handleAfterFetch(res: Response, callBackFunc?: () => void) {
-    if (!res.ok) {
-      throw new Error('There is something wrong... in Network')
-    }
-    callBackFunc && callBackFunc()
-    return res.json()
+  private async handleAfterFetch(res: Response, callBackFunc?: () => void) {
+    if (res.ok) {
+      callBackFunc && callBackFunc()
+      return res.json()
+      // 만약 다른 에러라고 하면??
+    } else if (res.status !== 200 || 201) {
+      const error = await res.json()
+      return Promise.reject(error)
+    } else throw new Error('Network has something wrong......... 📡')
   }
 
   public async get(url: string, callBackFunc?: () => void) {
     return await fetch(url, {
       headers: this.headers,
-    }).then((res) => this.handleAfterFetch(res, callBackFunc))
+    })
+      .then((res) => this.handleAfterFetch(res, callBackFunc))
+      .catch((err) => {
+        throw new Error(`${err.message}`)
+      })
   }
 
   public async post<T>(url: string, data: T, callBackFunc?: () => void) {
@@ -29,7 +36,11 @@ class Fetch implements IFetch {
       method: 'POST',
       headers: this.headers,
       body: JSON.stringify(data),
-    }).then((res) => this.handleAfterFetch(res, callBackFunc))
+    })
+      .then((res) => this.handleAfterFetch(res, callBackFunc))
+      .catch((err) => {
+        throw new Error(`${err.message}`)
+      })
   }
 
   public async patch<T>(url: string, data: T, callBackFunc?: () => void) {
@@ -37,14 +48,22 @@ class Fetch implements IFetch {
       method: 'PATCH',
       headers: this.headers,
       body: JSON.stringify(data),
-    }).then((res) => this.handleAfterFetch(res, callBackFunc))
+    })
+      .then((res) => this.handleAfterFetch(res, callBackFunc))
+      .catch((err) => {
+        throw new Error(`${err.message}`)
+      })
   }
 
-  public async delete<T>(url: string, callBackFunc?: () => void) {
+  public async delete(url: string, callBackFunc?: () => void) {
     return await fetch(url, {
       method: 'DELETE',
       headers: this.headers,
-    }).then((res) => this.handleAfterFetch(res, callBackFunc))
+    })
+      .then((res) => this.handleAfterFetch(res, callBackFunc))
+      .catch((err) => {
+        throw new Error(`${err.message}`)
+      })
   }
 }
 
