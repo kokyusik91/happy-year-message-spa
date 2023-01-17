@@ -12,6 +12,7 @@ module.exports = {
     filename: './js/[name].js',
     path: path.resolve(__dirname, './build'),
     clean: true,
+    assetModuleFilename: 'assets/[hash][ext][query]',
     publicPath: '/',
   },
   devServer: {
@@ -35,9 +36,26 @@ module.exports = {
         exclude: /node_modules/,
       },
       {
-        test: /\.s[ac]ss$/i,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
-        exclude: /node_modules/,
+        test: /\.(jpg|jpeg|gif|png|svg|ico)?$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              outputPath: '/assets/images',
+              name: '[name].[ext]?[hash]',
+            },
+          },
+        ],
+        exclude: /fonts/,
+      },
+      {
+        test: /\.(ttf|eot|svg|woff(2)?)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+        type: 'asset/resource',
+        dependency: { not: ['url'] },
+        generator: {
+          filename: 'fonts/[name][ext][query]',
+        },
+        exclude: /images/,
       },
     ],
   },

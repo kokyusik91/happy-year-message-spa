@@ -3,6 +3,15 @@ export type Route = {
   page: any
 }
 
+export type TargetPage = {
+  route: Route
+  result: RegExpMatchArray | null
+}
+
+export type ParamObj = {
+  [k: string]: string | undefined
+}
+
 export type Replace = {
   replace: boolean
 }

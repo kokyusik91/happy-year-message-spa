@@ -3,13 +3,10 @@ import DetailPage from './pages/detailpage'
 import WritePage from './pages/writepage'
 import EditPage from './pages/editPage'
 import notFoundPage from './pages/notFoundpage'
-import { Route, Replace } from './types/index'
+import { Route, Replace, TargetPage } from './types/index'
 
+import '/assets/images/error.jpg'
 import '../styles/index.scss'
-
-// regex를 return 하는 함수!
-const pathToRegex = (path: string) =>
-  new RegExp('^' + path.replace(/\//g, '\\/').replace(/:\w+/g, '(.+)') + '$')
 
 const routes = [
   {
@@ -33,7 +30,7 @@ const routes = [
 class Router {
   constructor(private mainRoute: Route[], private root: HTMLElement) {
     // 뒤로 가기 했을때, 앞으로 가기 했을때
-    window.addEventListener('popstate', (e) => {
+    window.addEventListener('popstate', () => {
       this.router()
     })
     // 새로고침해도 해당페이지로 이동
@@ -53,26 +50,32 @@ class Router {
     history.back()
   }
 
-  private getParams(targetPage: any) {
-    const values = targetPage.result.slice(1)
+  private pathToRegex(path: string) {
+    return new RegExp(
+      '^' + path.replace(/\//g, '\\/').replace(/:\w+/g, '(.+)') + '$',
+    )
+  }
+
+  private getParams(targetPage: TargetPage) {
+    const values = targetPage?.result?.slice(1)
     const keys = Array.from(targetPage.route.path.matchAll(/:(\w+)/g)).map(
-      (result: any) => result[1],
+      (result) => result[1],
     )
 
-    const paramsList = Object.fromEntries(
+    const paramsObj = Object.fromEntries(
       keys.map((key, index) => {
-        return [key, values[index]]
+        return [key, values && values[index]]
       }),
     )
 
-    return paramsList
+    return paramsObj
   }
 
   private async router() {
     const advancedRoutes = this.mainRoute?.map((route) => {
       return {
         route,
-        result: location.pathname.match(pathToRegex(route.path)),
+        result: location.pathname.match(this.pathToRegex(route.path)),
       }
     })
 

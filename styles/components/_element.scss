@@ -37,14 +37,21 @@
 
 .small-button {
   margin: 0 0 0 auto;
-  display: block;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   margin-top: 24px;
   padding: 16px 16px;
   background-color: $green;
   @include text-style(16);
+  font-weight: 500;
   border-radius: 14px;
   color: $white;
+
+  span {
+    margin-right: 6px;
+  }
 }
 
 .normal-button {
@@ -126,4 +133,12 @@
   .data-wrapper:last-child {
     margin-bottom: 0;
   }
+}
+
+.icon-pencil {
+  color: $white;
+}
+
+.icon-arrow-left2 {
+  color: $white;
 }
