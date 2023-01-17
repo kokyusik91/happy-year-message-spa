@@ -20,7 +20,8 @@ class EditPage {
             ${CommonHeader.makeTemplate({
               title: 'Happy New Year 🎉',
               subTitle: '게시글을 수정해 보세요! 🖋️',
-              buttonTemplate: '<button class="back-button">👈🏻</button>',
+              buttonTemplate:
+                '<button class="back-button"><i class="icon-arrow-left2"></i></button>',
             })}
             <section class='main-content otherpage'>
               <div class='full-image-container'>

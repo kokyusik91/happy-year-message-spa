@@ -51,7 +51,7 @@ class WritePage implements Page {
               title: 'Happy New Year 🎉',
               subTitle: '게시글을 작성해 보세요! 🖋️',
               buttonTemplate:
-                '<button class="back-button" aria-label="back-handle-button">👈🏻</button>',
+                '<button class="back-button" aria-label="back-handle-button"><i class="icon-arrow-left2"></i></button>',
             })}
             <section class='main-content otherpage'>
               ${CommonInput.makeTemplate({})}
@@ -61,7 +61,7 @@ class WritePage implements Page {
               </div>
               <div class='full-image-container'>
               </div>
-              <button class='small-button random-image-trigger'>랜덤이미지 생성기</button>
+              <button class='small-button random-image-trigger'><span>랜덤이미지 생성</span>  <i class='icon-image'></i></button>
               <button class='normal-button submit'>제출하기 🚀</button>
             </section>`
   }

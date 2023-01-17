@@ -39,7 +39,9 @@ class MainPage implements Page {
               <ul class='post-list'></ul>
             </section>
             <footer class='main-footer'>
-              <button class='fab-button'>🖊️</button>
+              <button class='fab-button'>
+                <i class='icon-pencil'></i>
+              </button>
             </footer>
           `
   }
