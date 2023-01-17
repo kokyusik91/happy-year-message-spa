@@ -12,10 +12,10 @@ import {
   stripHTML,
 } from '../shared/utils'
 
-import { PostPreview, Comment } from '../types/index'
+import { PostPreview, Comment, ParamObj } from '../types/index'
 
 class DetailPage {
-  constructor(private root: HTMLElement, private params: any) {}
+  constructor(private root: HTMLElement, private params: ParamObj) {}
 
   attchComment(parentElement: HTMLElement, comments: Comment[]) {
     const commentTemplate = comments
@@ -74,7 +74,7 @@ class DetailPage {
     let comments: Comment[] = []
 
     const { id } = this.params
-    const postId: number = +id
+    const postId: number = +id! as number
 
     try {
       const response = await postService.getPostById(postId)
@@ -82,7 +82,8 @@ class DetailPage {
       this.root.innerHTML = this.makePageTemplate(post)
       comments = commentsData
     } catch (err) {
-      alert('없는 게시글을 조회 하였습니다!')
+      alert(`😵${err}`)
+
       routerInstance.handleNavigateBack()
     }
 
@@ -114,7 +115,7 @@ class DetailPage {
             routerInstance.handleNavigateBack()
           })
         } catch (err) {
-          alert(err)
+          alert(`😵${err}`)
         } finally {
           fetching = false
           handleButtonDisabled(fetching, deleteButton)
@@ -140,7 +141,8 @@ class DetailPage {
         this.attchComment(commentListElement, [comment])
         commentCount.innerText = `댓글 ${commentListElement.childElementCount}`
       } catch (err) {
-        alert('중복 댓글은 작성할 수 없습니다.')
+        // 서버에서 에러 메시지가 제대로 전달이 안됨.. 임의로 대체
+        alert(`😵${err}`)
       } finally {
         fetching = false
         handleButtonDisabled(fetching, commentSubmitButton)
@@ -164,7 +166,7 @@ class DetailPage {
           commentListElement.removeChild(element)
           commentCount.innerText = `댓글 ${commentListElement.childElementCount}`
         } catch (err) {
-          alert(err)
+          alert(`😵${err}`)
         } finally {
           fetching = false
           handleButtonDisabled(fetching, commentDeleteButton)

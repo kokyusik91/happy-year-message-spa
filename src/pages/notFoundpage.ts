@@ -1,7 +1,7 @@
 import { routerInstance } from '../index'
 import { $ } from '../shared/utils'
 
-class notFoundPage {
+class NotFoundPage {
   constructor(private root: HTMLElement) {}
 
   makePageTemplate() {
@@ -28,4 +28,4 @@ class notFoundPage {
   }
 }
 
-export default notFoundPage
+export default NotFoundPage

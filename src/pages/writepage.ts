@@ -7,12 +7,12 @@ import {
 } from '../shared/utils'
 import postService, { fetchUnsplashImage } from '../shared/service/postService'
 import { UNSPLAH_ACCESS_KEY } from '../constants/index'
-import { ExtraImageInfo, Page } from '../types/index'
+import { ExtraImageInfo, Page, ParamObj } from '../types/index'
 import CommonHeader from '../components/CommonHeader'
 import CommonInput from '../components/CommonInput'
 
 class WritePage implements Page {
-  constructor(private root: HTMLElement, private params: any) {}
+  constructor(private root: HTMLElement, private params: ParamObj) {}
 
   private attachPreviewImage(
     parentElement: HTMLElement,
@@ -86,7 +86,7 @@ class WritePage implements Page {
       try {
         fetching = true
         handleButtonDisabled(fetching, randomImageTriggerButton)
-        const response = await fetchUnsplashImage(UNSPLAH_ACCESS_KEY)
+        const response = await fetchUnsplashImage(UNSPLAH_ACCESS_KEY || '')
         imageUrl = response.urls.small
         imageDesc = response.alt_description
         const { downloads, likes, views } = response
@@ -98,7 +98,7 @@ class WritePage implements Page {
         })
         imageContainer.classList.add('attached')
       } catch (err) {
-        alert(err)
+        alert(`😵${err}`)
       } finally {
         fetching = false
         handleButtonDisabled(fetching, randomImageTriggerButton)
@@ -133,7 +133,9 @@ class WritePage implements Page {
           routerInstance.handleNavigateBack()
         })
       } catch (err) {
-        alert(err)
+        console.log(typeof err)
+
+        alert(`😵${err}`)
       } finally {
         fetching = false
         handleButtonDisabled(fetching, submitButton)
