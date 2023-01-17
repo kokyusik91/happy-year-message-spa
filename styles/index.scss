@@ -6,12 +6,14 @@
 @import './base/normalize';
 @import './base/reset';
 @import './base/global';
+@import './base/fonts';
 
 @import './mixin/text-style';
 
 // 기본 레이아웃
 @import './layouts/body';
 @import './layouts/detailpage';
+@import './layouts/editpage';
 @import './layouts/404page';
 
 // 요소들

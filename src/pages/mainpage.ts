@@ -3,10 +3,10 @@ import postService from '../shared/service/postService'
 import CommonHeader from '../components/CommonHeader'
 import { changeToLocalTime, $, stripHTML } from '../shared/utils'
 // types
-import { Page, PostPreview } from '../types/index'
+import { Page, ParamObj, PostPreview } from '../types/index'
 
 class MainPage implements Page {
-  constructor(private root: HTMLElement, private params?: any) {}
+  constructor(private root: HTMLElement, private params?: ParamObj) {}
 
   private attchPostPreviews(posts: PostPreview[], parentElement: HTMLElement) {
     const template = posts
@@ -39,7 +39,9 @@ class MainPage implements Page {
               <ul class='post-list'></ul>
             </section>
             <footer class='main-footer'>
-              <button class='fab-button'>🖊️</button>
+              <button class='fab-button'>
+                <i class='icon-pencil'></i>
+              </button>
             </footer>
           `
   }
@@ -47,25 +49,29 @@ class MainPage implements Page {
   async render() {
     this.root.innerHTML = this.makePageTemplate()
 
-    // 이 시점에 이미 html 요소 렌더링된 후 이므로 as 키워드로 강제 캐스팅하였음.
+    // 이 시점에 이미 html 요소 렌더링된 후 이므로 as 키워드로 type assertion
     const fabButton = $('.fab-button')! as HTMLButtonElement
     const postListElement = $('.post-list')! as HTMLUListElement
 
     try {
       const response = await postService.getPosts()
       const { posts } = response.data
-      this.attchPostPreviews(posts, postListElement)
+      const sortedPosts = posts.sort((a: PostPreview, b: PostPreview) =>
+        b.createdAt.localeCompare(a.createdAt),
+      )
+      this.attchPostPreviews(sortedPosts, postListElement)
     } catch (err) {
-      alert(err)
+      alert(`😵${err}`)
     }
-
     fabButton?.addEventListener('click', () => {
       routerInstance.navigate('/write')
     })
     // 이벤트 위임 사용
-    postListElement.addEventListener('click', (e: any) => {
-      if (e.target.nodeName === 'LI') {
-        const postId = e.target.dataset.id
+    postListElement.addEventListener('click', (e: Event) => {
+      const target = e.target as HTMLElement
+
+      if (target.nodeName === 'LI') {
+        const postId = target.dataset.id
         routerInstance.navigate(`/post/${postId}`)
       }
     })

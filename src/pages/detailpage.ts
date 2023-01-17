@@ -12,10 +12,10 @@ import {
   stripHTML,
 } from '../shared/utils'
 
-import { PostPreview, Comment } from '../types/index'
+import { PostPreview, Comment, ParamObj } from '../types/index'
 
 class DetailPage {
-  constructor(private root: HTMLElement, private params: any) {}
+  constructor(private root: HTMLElement, private params: ParamObj) {}
 
   attchComment(parentElement: HTMLElement, comments: Comment[]) {
     const commentTemplate = comments
@@ -27,7 +27,6 @@ class DetailPage {
             </li>`
       })
       .join('')
-
     parentElement.insertAdjacentHTML('beforeend', commentTemplate)
   }
 
@@ -37,7 +36,8 @@ class DetailPage {
             ${CommonHeader.makeTemplate({
               title: 'Happy New Year 🎉',
               subTitle: '게시글 상세는 어떤글이 올라왔을까요? 🖋️',
-              buttonTemplate: '<button class="back-button">👈🏻</button>',
+              buttonTemplate:
+                '<button class="back-button"><i class="icon-arrow-left2"></i></button>',
             })}
             <section class='main-content fixed'>
               <article class='detailpage-content'>
@@ -74,7 +74,7 @@ class DetailPage {
     let comments: Comment[] = []
 
     const { id } = this.params
-    const postId: number = +id
+    const postId: number = +id! as number
 
     try {
       const response = await postService.getPostById(postId)
@@ -82,7 +82,8 @@ class DetailPage {
       this.root.innerHTML = this.makePageTemplate(post)
       comments = commentsData
     } catch (err) {
-      alert('없는 게시글을 조회 하였습니다!')
+      alert(`😵${err}`)
+
       routerInstance.handleNavigateBack()
     }
 
@@ -114,7 +115,7 @@ class DetailPage {
             routerInstance.handleNavigateBack()
           })
         } catch (err) {
-          alert(err)
+          alert(`😵${err}`)
         } finally {
           fetching = false
           handleButtonDisabled(fetching, deleteButton)
@@ -140,16 +141,18 @@ class DetailPage {
         this.attchComment(commentListElement, [comment])
         commentCount.innerText = `댓글 ${commentListElement.childElementCount}`
       } catch (err) {
-        alert('중복 댓글은 작성할 수 없습니다.')
+        // 서버에서 에러 메시지가 제대로 전달이 안됨.. 임의로 대체
+        alert(`😵${err}`)
       } finally {
         fetching = false
         handleButtonDisabled(fetching, commentSubmitButton)
       }
     })
     // 이벤트 위임 사용
-    commentListElement.addEventListener('click', async (e: any) => {
-      if (e.target?.nodeName === 'BUTTON') {
-        const element = e.target.closest('.reply-list-item')
+    commentListElement.addEventListener('click', async (e: Event) => {
+      const target = e.target as HTMLElement
+      if (target?.nodeName === 'BUTTON') {
+        const element = target.closest('.reply-list-item')! as HTMLElement
         const commentId = element.dataset.id
         // 선택된 요소의 삭제버튼을 찾아야함!
         const commentDeleteButton = element.querySelector(
@@ -158,12 +161,12 @@ class DetailPage {
         try {
           fetching = true
           handleButtonDisabled(fetching, commentDeleteButton)
-          await commentService.deleteComment(commentId)
+          await commentService.deleteComment(+commentId!)
           // 뷰에서 댓글 삭제...
           commentListElement.removeChild(element)
           commentCount.innerText = `댓글 ${commentListElement.childElementCount}`
         } catch (err) {
-          alert(err)
+          alert(`😵${err}`)
         } finally {
           fetching = false
           handleButtonDisabled(fetching, commentDeleteButton)
@@ -176,8 +179,3 @@ class DetailPage {
 }
 
 export default DetailPage
-
-// 클릭 이벤트 타입 지정하기
-// 파람스 어떻게 처리할지?
-// 댓글 렌더링 어떻게 하는게 최적일지?
-// 댓글 갯수 어떻게 렌더링 해야할지 ?
