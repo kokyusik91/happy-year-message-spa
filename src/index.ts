@@ -5,6 +5,7 @@ import EditPage from './pages/editPage'
 import notFoundPage from './pages/notFoundpage'
 import { Route, Replace } from './types/index'
 
+import '/assets/images/error.jpg'
 import '../styles/index.scss'
 
 // regex를 return 하는 함수!
