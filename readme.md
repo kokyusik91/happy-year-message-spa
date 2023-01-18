@@ -67,6 +67,7 @@ http://ts-spa.s3-website.ap-northeast-2.amazonaws.com/
 ├── index.html
 ├── src
 │   ├── index.ts
+│   ├── router.ts
 │   ├── pages
 │   │   ├── mainpage.ts
 │   │   ├── writepage.ts
@@ -104,6 +105,8 @@ http://ts-spa.s3-website.ap-northeast-2.amazonaws.com/
 <br>
 
 - `/src/*` : ts 파일들
+  - `index.ts` : webpack entry 시작점 최상단 root 파일
+  - `router.ts` : 라우터 Class가 위치한 파일
   - `components`
     - `CommonHeader.ts` : 모든 페이지 상단의 공통 Header
   - `constants`
