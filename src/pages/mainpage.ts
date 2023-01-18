@@ -6,7 +6,9 @@ import { changeToLocalTime, $, stripHTML } from '../shared/utils'
 import { Page, ParamObj, PostPreview } from '../types/index'
 
 class MainPage implements Page {
-  constructor(private root: HTMLElement, private params?: ParamObj) {}
+  constructor(private root: HTMLElement, private params?: ParamObj) {
+    console.log(params)
+  }
 
   private attchPostPreviews(posts: PostPreview[], parentElement: HTMLElement) {
     const template = posts
@@ -14,7 +16,9 @@ class MainPage implements Page {
         return `
                 <li class='post-list-item' data-id=${post.postId}>
                   <div class='post-image'>
-                    <img src=${post.image} alt='포스트 이미지'/>
+                    <img src=${
+                      post.image ? post.image : '/assets/images/error.jpg'
+                    } alt=${stripHTML(post.title)}'/>
                   </div>
                   <div class='post-info'>
                     <h2 class='post-info-title'>${stripHTML(post.title)}</h2>
@@ -31,7 +35,7 @@ class MainPage implements Page {
   makePageTemplate() {
     return `
             ${CommonHeader.makeTemplate({
-              title: 'Happy New Year 2013 🐰',
+              title: 'Happy New Year 2023 🐰',
               subTitle: '무슨 인사들이 올라왔을까요? 😊',
             })}
             <section class='main-content'>
