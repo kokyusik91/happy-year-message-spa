@@ -60,6 +60,7 @@ class DetailPage {
                 <h1 class='reply-count'>댓글 0</h1>
                 <ul class='reply-list'></ul>
               </article>
+              <div class='empty-box'></div>
               </section>
               <footer class='detailpage-footer'>
                 <h1 class='visually-hidden'>댓글 입력 창</h1>

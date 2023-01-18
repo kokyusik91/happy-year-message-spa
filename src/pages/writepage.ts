@@ -54,7 +54,10 @@ class WritePage implements Page {
                 '<button class="back-button" aria-label="back-handle-button"><i class="icon-arrow-left2"></i></button>',
             })}
             <section class='main-content otherpage'>
-              ${CommonInput.makeTemplate({})}
+               <div class='input-container'>
+                <label for="title">제목</label>
+                <input id='title' class='title' type='text' placeholder='제목을 작성해 주세요!'  />
+              </div>
               <div class='input-container last'>
                 <label for="content">내용</label>
                 <textarea id='content' class='content' cols="100" rows="10" placeholder='내용을 작성해 주세요!'></textarea>
