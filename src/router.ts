@@ -19,7 +19,7 @@ class Router {
     } else history.pushState(null, 'null', url)
     this.router()
   }
-
+  // 뒤로가기
   public handleNavigateBack() {
     history.back()
   }
