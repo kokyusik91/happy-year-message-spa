@@ -11,7 +11,7 @@ class CommonInput {
     return `
         <div class='input-container'>
             <label for="title">제목</label>
-            <input id='title' class='title' type='text' placeholder='제목을 작성해 주세요!' value=${value} />
+            <input id='title' class='title' type='text' placeholder=${placeholder} value=${value} />
         </div>
     `
   }
